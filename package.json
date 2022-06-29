@@ -52,9 +52,13 @@
     "@koishijs/plugin-logger": "^1.2.3",
     "@koishijs/plugin-manager": "^1.9.1",
     "@koishijs/plugin-rate-limit": "1.1.5",
+    "@koishijs/plugin-repeater": "1.0.2",
     "@koishijs/plugin-sandbox": "^1.1.4",
+    "@koishijs/plugin-schedule": "4.2.1",
     "@koishijs/plugin-status": "^5.4.1",
     "@koishijs/plugin-suggest": "^1.1.0",
+    "@koishijs/plugin-teach": "3.2.0",
+    "dotenv": "^16.0.1",
     "koishi": "^4.7.3"
   },
   "yakumo": {

@@ -1,0 +1,41 @@
+port: 5140
+maxPort: 5149
+plugins:
+  help: null
+  suggest: null
+  console:
+    open: false
+  logger: null
+  manager: null
+  status: null
+  sandbox: null
+  adapter-onebot:
+    bots:
+      - selfId: ${{env.BOT_SELFID}}
+        password: ${{env.BOT_PASSWORD}}
+        token: ${{env.BOT_TOKEN}}
+        endpoint: ${{env.BOT_ENDPOINT}}
+        timeout: 5
+        protocol: ws
+        disabled: false
+    path: ${{env.BOT_PATH}}
+    secret: ${{env.BOT_SECRET}}
+  adapter-discord:
+    bots: []
+  adapter-telegram:
+    bots: []
+  chat: {}
+  echo: {}
+  database-mysql:
+    host: ${{env.MYSQL_HOST}}
+    port: 3306
+    user: ${{env.MYSQL_USER}}
+    password: ${{env.MYSQL_PASSWORD}}
+    database: ${{env.MYSQL_DATABASE}}
+  dataview: {}
+  repeater: {}
+  teach:
+    prefix: "->"
+  schedule: {}
+  ~assets-local:
+    root: ./

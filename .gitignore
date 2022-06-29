@@ -19,5 +19,3 @@ tsconfig.tsbuildinfo
 *.sln
 
 logs
-
-koishi.yml
