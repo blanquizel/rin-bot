@@ -147,8 +147,6 @@ export class Gacha {
             isProtect: minLv === undefined ? false : true,
             isPickup: false
         }
-
-
     }
 
     single(poolName: string = 'pickup'): string {

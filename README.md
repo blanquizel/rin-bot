@@ -5,12 +5,12 @@
 + 仅接入onebot频道
 + 参考[2bot](https://github.com/idlist/2bot-v4)
 
+# done
++ 抽卡模拟-明日方舟 单抽/十连
 
 # To-do List
-+ 抽卡模拟
 + 重复图片警告
 + 活动日程防侠提醒
 + 当年法定假期提示
 + 话痨统计
-+
 
