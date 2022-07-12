@@ -1,5 +1,5 @@
-import { Context, Logger } from 'koishi'
-import { resourceUsage } from 'process';
+import { Context, Logger, Session } from 'koishi'
+import dayjs from 'dayjs'
 
 import { data as mrfz } from './ark-knights';
 
@@ -90,11 +90,13 @@ export class Gacha {
     readonly data: Game;
     readonly log: Logger;
     readonly username: String;
+    readonly timestamp: number;
 
-    constructor(log: Logger, game: Game, username) {
+    constructor(log: Logger, game: Game, session: Session) {
         this.data = game;
         this.log = log;
-        this.username = username;
+        this.username = session.author.nickname === '' ? session.author.username : session.author.nickname;
+        this.timestamp = session.timestamp;
     }
     draw(pool: Pool, minLv?: number): Card {
 
@@ -156,7 +158,7 @@ export class Gacha {
             return curPool;
         }
 
-        let result = `${this.username}在卡池《${curPool.name}》中抽取到：`;
+        let result = `${this.username}于${dayjs(this.timestamp).format('YYYY-MM-DD HH:mm:ss')}在卡池《${curPool.name}》中抽取到：`;
 
         const card = this.draw(curPool);
 
@@ -190,7 +192,7 @@ export class Gacha {
             }
         }
 
-        let result = `${this.username}在卡池《${curPool.name}》中抽取到：`;
+        let result = `${this.username}于${dayjs(this.timestamp).format('YYYY-MM-DD HH:mm:ss')}在卡池《${curPool.name}》中抽取到：`;
         cards.forEach(card => {
             if (card.isProtect) {
                 result += `${card.cardText}(${card.cardLv}${card.isPickup ? ' Pick Up!' : ''} 保底)，`;
@@ -211,8 +213,7 @@ export function core(ctx: Context, config: Config) {
     ctx.command('mrfz-1')
         .userFields(['name'])
         .action(({ session }) => {
-            const username = session.author.nickname === '' ? session.author.username : session.author.nickname;
-            const gacha = new Gacha(log, mrfz, username);
+            const gacha = new Gacha(log, mrfz, session);
 
             // const renderResult = comment => {
             //     return ctx.i18n.render(comment);
@@ -226,9 +227,8 @@ export function core(ctx: Context, config: Config) {
     ctx.command('mrfz-10')
         .userFields(['name'])
         .action(({ session }) => {
-            // console.log(session);s
-            const username = session.author.nickname === '' ? session.author.username : session.author.nickname;
-            const gacha = new Gacha(log, mrfz, username);
+            // console.log(session);
+            const gacha = new Gacha(log, mrfz, session);
 
             return gacha.consecutive();
         })
