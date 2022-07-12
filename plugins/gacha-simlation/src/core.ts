@@ -83,6 +83,7 @@ export type Card = {
     cardLv: string;
     cardLvIdx: number;
     isProtect: boolean;
+    isPickup: boolean;
 }
 
 export class Gacha {
@@ -119,20 +120,35 @@ export class Gacha {
                 gacha -= probability;
             }
         }
+        if (pool.pickup.hasOwnProperty(cardLv)) {
+            let gacha: number = Math.floor(Math.random() * 100) + 1;
+            if (gacha >= 50) {
+                const cards = pool.pickup[cardLv];
+                const len = cards.length;
+                const idx = Math.floor(Math.random() * len);
 
-
+                return {
+                    cardLv: cardLv,
+                    cardText: cards[idx],
+                    cardLvIdx: lvIdx,
+                    isProtect: minLv === undefined ? false : true,
+                    isPickup: true
+                }
+            }
+        }
         const cards = pool.cards[cardLv];
-
         const len = cards.length;
-
         const idx = Math.floor(Math.random() * len);
 
         return {
-            'cardLv': cardLv,
-            'cardText': cards[idx],
-            'cardLvIdx': lvIdx,
-            'isProtect': minLv === undefined ? false : true,
+            cardLv: cardLv,
+            cardText: cards[idx],
+            cardLvIdx: lvIdx,
+            isProtect: minLv === undefined ? false : true,
+            isPickup: false
         }
+
+
     }
 
     single(poolName: string = 'pickup'): string {
@@ -146,7 +162,7 @@ export class Gacha {
 
         const card = this.draw(curPool);
 
-        return result += `${card.cardText}(${card.cardLv})`;
+        return result += `${card.cardText}(${card.cardLv}${card.isPickup ? ' Pick Up!' : ''})`;
     }
 
     consecutive(poolName: string = 'pickup', count = 10) {
@@ -162,9 +178,9 @@ export class Gacha {
 
         const record: number[] = new Array(len).fill(0);
         for (let i = 0; i < count; i++) {
-            console.log(record);
+            // console.log(record);
             if (i === count - 1) {
-                if (record[len - 2] < 1) {
+                if (record[len - 2] < 1 && record[len - 1] < 1) {
                     const card = this.draw(curPool, record.length - 1);
                     cards.push(card);
                     record[card.cardLvIdx]++;
@@ -178,11 +194,10 @@ export class Gacha {
 
         let result = `${this.username}在卡池《${curPool.name}》中抽取到：`;
         cards.forEach(card => {
-
-            if( card.isProtect){
-                result += `${card.cardText}(${card.cardLv} 保底)，`;
-            }else{
-                result += `${card.cardText}(${card.cardLv})，`;
+            if (card.isProtect) {
+                result += `${card.cardText}(${card.cardLv}${card.isPickup ? ' Pick Up!' : ''} 保底)，`;
+            } else {
+                result += `${card.cardText}(${card.cardLv}${card.isPickup ? ' Pick Up!' : ''})，`;
             }
         })
 
@@ -195,11 +210,11 @@ export function core(ctx: Context, config: Config) {
 
     log.debug('gacha-simlation test');
 
-    ctx.command('mrfz')
+    ctx.command('mrfz-1')
         .userFields(['name'])
         .action(({ session }) => {
-
-            const gacha = new Gacha(log, mrfz, session.author.username);
+            const username = session.author.nickname === '' ? session.author.username : session.author.nickname;
+            const gacha = new Gacha(log, mrfz, username);
 
             // const renderResult = comment => {
             //     return ctx.i18n.render(comment);
@@ -213,7 +228,9 @@ export function core(ctx: Context, config: Config) {
     ctx.command('mrfz-10')
         .userFields(['name'])
         .action(({ session }) => {
-            const gacha = new Gacha(log, mrfz, session.author.username);
+            // console.log(session);s
+            const username = session.author.nickname === '' ? session.author.username : session.author.nickname;
+            const gacha = new Gacha(log, mrfz, username);
 
             return gacha.consecutive();
         })
