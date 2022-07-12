@@ -1,11 +1,17 @@
 port: 5140
 maxPort: 5149
 plugins:
-  help: null
+  help:
+    hidden: true
+    shortcut: false
   suggest: null
   console:
     open: false
-  logger: null
+  logger:
+    levels:
+      command: 3
+    showTime: YYYY-MM-dd hh:mm:ss
+    showDiff: false
   manager: null
   status: null
   sandbox: null
@@ -39,3 +45,6 @@ plugins:
   schedule: {}
   ~assets-local:
     root: ./
+  plugin-test: {}
+  duplicate-image: {}
+  gacha-simlation: {}
