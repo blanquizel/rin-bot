@@ -165,7 +165,7 @@ export class Gacha {
         return result += `${card.cardText}(${card.cardLv}${card.isPickup ? ' Pick Up!' : ''})`;
     }
 
-    consecutive(poolName: string = 'pickup', count = 10) {
+    consecutive(poolName: string = 'pickup', count = 10, useMin = false) {
 
         const curPool: Pool | string = this.data.getPool(poolName);
         if (typeof curPool === 'string') {
@@ -179,7 +179,7 @@ export class Gacha {
         const record: number[] = new Array(len).fill(0);
         for (let i = 0; i < count; i++) {
             // console.log(record);
-            if (i === count - 1) {
+            if (i === count - 1 && useMin) {
                 if (record[len - 2] < 1 && record[len - 1] < 1) {
                     const card = this.draw(curPool, record.length - 1);
                     cards.push(card);

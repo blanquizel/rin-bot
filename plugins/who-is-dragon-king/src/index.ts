@@ -20,7 +20,6 @@ const core = (ctx: Context) => {
             const list = [];
             let count = 0;
             for (let item of record.entries()) {
-                console.log(item);
                 list.push(item);
                 count += item[1];
             }
@@ -40,7 +39,7 @@ const core = (ctx: Context) => {
         })
 
     ctx.middleware(async (session, next) => {
-        console.log(session);
+        // console.log(session);
         const guildId = session.guildId;
         const userId = session.author.userId;
         const username = session.author.nickname === '' ? session.author.username : session.author.nickname;
