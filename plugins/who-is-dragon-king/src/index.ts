@@ -1,4 +1,5 @@
 import { Context, Logger } from 'koishi'
+import dayjs from 'dayjs'
 
 export const name = 'who-is-dragon-king'
 
