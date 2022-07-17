@@ -53,26 +53,21 @@ const data = {
     "year-2022": year2022
 }
 
-
-enum Years {
-    YEAR2022 = 'year2022',
-}
-
 export function core(ctx: Context) {
 
-    ctx.command('最近假日')
+    ctx.command('剩余假期')
         .userFields(['name'])
-        .action(({ session }) => {
+        .action(() => {
             const cur = new Date();
             const year = dayjs(cur).year();
 
-            let str = `今天是${dayjs(cur).format('YYYY-MM-DD')}，星期${weekDay[dayjs(cur).day()]}。`;
+            let str = `今天是${dayjs(cur).format('YYYY年MM月DD日')}，星期${weekDay[dayjs(cur).day()]}。`;
             const holidays = data['year-' + year];
             holidays.forEach((holiday: Holiday) => {
                 if (dayjs(cur).isBefore(dayjs(holiday.start))) {
                     const duration = dayjs(holiday.start).dayOfYear() - dayjs(cur).dayOfYear();
 
-                    str += `距离${holiday.name}（${holiday.start}）还有${duration}天,`;
+                    str += `距离${holiday.name}（${dayjs(holiday.start).format('YYYY年MM月DD日')}）还有${duration}天,`;
                 }
             })
             str += '享受剩余的假日吧！';
