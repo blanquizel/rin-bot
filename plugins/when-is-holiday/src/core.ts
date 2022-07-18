@@ -69,7 +69,7 @@ export function core(ctx: Context) {
                 if (cur.isBefore(dayjs(holiday.start))) {
                     const duration = dayjs(holiday.start).dayOfYear() - cur.dayOfYear();
 
-                    str += `距离${holiday.name}（${dayjs(holiday.start).format('YYYY年MM月DD日')}）还有${duration}天,`;
+                    str += `距离${holiday.name}（${dayjs(holiday.start).format('YYYY年MM月DD日')}）还有${duration}天，`;
                 }
             })
             str += '享受剩余的假日吧！';
