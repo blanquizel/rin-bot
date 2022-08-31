@@ -57,7 +57,7 @@ const data = {
 
 export function core(ctx: Context) {
 
-    ctx.command('剩余假期')
+    ctx.command('法定假期')
         .userFields(['name'])
         .action(() => {
             const cur = dayjs(new Date());

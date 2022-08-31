@@ -13,7 +13,7 @@ const r5 = ['白面鸮', '凛冬', '德克萨斯', '芙兰卡', '拉普兰德', 
     '贾维', '安哲拉', '燧石', '四月', '奥斯塔', '絮雨', '卡夫卡', '爱丽丝', '乌有', '熔泉', '赤冬', '绮良', '羽毛笔', '桑葚', '灰豪',
     '蚀清', '极光', '夜半', '夏栎', '风丸', '洛洛', '掠风', '濯尘芙蓉', '承曦格雷伊'];
 const r6 = ['能天使', ' 推进之王', '伊芙利特', '艾雅法拉', '安洁莉娜', '闪灵', '夜莺', '星熊', '塞雷娅', '银灰', '斯卡蒂', '陈', '黑', '赫拉格',
-    '麦哲伦', '莫斯提马', '刻俄柏', '风笛', '傀影', '温蒂', '早露', '铃兰', '棘刺', '森蚺', '史尔特尔', '瑕光', '泥岩', '山', '空弦',
+    '麦哲伦', '莫斯提马', '煌', '刻俄柏', '风笛', '傀影', '温蒂', '早露', '铃兰', '棘刺', '森蚺', '史尔特尔', '瑕光', '泥岩', '山', '空弦',
     '嵯峨', '异客', '凯尔希', '卡涅利安', '帕拉斯', '水月', '琴柳', '远牙', '焰尾', '灵知', '老鲤', '澄闪', '菲亚梅塔', '号角', '艾丽妮',
     '黑键', '多萝西'];
 
@@ -56,7 +56,10 @@ const standard: Pool = {
         '5★': r5,
         '6★': r6,
     },
-    pickup: {}
+    pickup: {
+        '5★': ['白金', '夜魔', '燧石'],
+        '6★': ['塞雷娅', '煌']
+    }
 }
 
 const data: Game = {
@@ -138,7 +141,7 @@ export class MRFZ extends GaCha {
         }
     }
 
-    single(poolName: string = 'pickup'): string {
+    single(poolName: string = 'standard'): string {
 
         const curPool: Pool | string = this.data.getPool(poolName);
         if (typeof curPool === 'string') {
@@ -152,7 +155,7 @@ export class MRFZ extends GaCha {
         return result += `${card.cardText}(${card.cardLv}${card.isPickup ? ' Pick Up!' : ''})`;
     }
 
-    consecutive(poolName: string = 'pickup', count = 10, useMin = false) {
+    consecutive(poolName: string = 'standard', count = 10, useMin = false) {
 
         const curPool: Pool | string = this.data.getPool(poolName);
         if (typeof curPool === 'string') {
