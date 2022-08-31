@@ -1,3 +1,5 @@
+prefix:
+  - '-'
 port: 5140
 maxPort: 5149
 plugins:
@@ -16,20 +18,15 @@ plugins:
   status: null
   sandbox: null
   adapter-onebot:
-    bots:
-      - selfId: ${{env.BOT_SELFID}}
-        password: ${{env.BOT_PASSWORD}}
-        token: ${{env.BOT_TOKEN}}
-        endpoint: ${{env.BOT_ENDPOINT}}
-        timeout: 5
-        protocol: ws
-        disabled: false
+    selfId: ${{env.BOT_SELFID}}
+    password: ${{env.BOT_PASSWORD}}
+    token: ${{env.BOT_TOKEN}}
+    endpoint: ${{env.BOT_ENDPOINT}}
+    timeout: 5
+    protocol: ws
+    disabled: false
     path: ${{env.BOT_PATH}}
     secret: ${{env.BOT_SECRET}}
-  adapter-discord:
-    bots: []
-  adapter-telegram:
-    bots: []
   chat: {}
   echo: {}
   database-mysql:
@@ -41,12 +38,8 @@ plugins:
   dataview: {}
   repeater: {}
   teach:
-    prefix: "->"
+    prefix: '->'
   schedule: {}
   ~assets-local:
-    root: ./
-  plugin-test: {}
-  duplicate-image: {}
-  gacha-simlation: {}
-  who-is-dragon-king: {}
-  when-is-holiday: {}
+    root: ./assets
+  database-memory: {}
