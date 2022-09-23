@@ -1,45 +1,41 @@
-prefix:
-  - '-'
 port: 5140
 maxPort: 5149
 plugins:
-  help:
-    hidden: true
-    shortcut: false
-  suggest: null
-  console:
-    open: false
-  logger:
-    levels:
-      command: 3
-    showTime: YYYY-MM-dd hh:mm:ss
-    showDiff: false
-  manager: null
-  status: null
-  sandbox: null
-  adapter-onebot:
-    selfId: ${{env.BOT_SELFID}}
-    password: ${{env.BOT_PASSWORD}}
-    token: ${{env.BOT_TOKEN}}
-    endpoint: ${{env.BOT_ENDPOINT}}
-    timeout: 5
-    protocol: ws
-    disabled: false
-    path: ${{env.BOT_PATH}}
-    secret: ${{env.BOT_SECRET}}
-  chat: {}
-  echo: {}
-  database-mysql:
-    host: ${{env.MYSQL_HOST}}
-    port: 3306
-    user: ${{env.MYSQL_USER}}
-    password: ${{env.MYSQL_PASSWORD}}
-    database: ${{env.MYSQL_DATABASE}}
-  dataview: {}
-  repeater: {}
-  teach:
-    prefix: '->'
-  schedule: {}
-  ~assets-local:
-    root: ./assets
-  database-memory: {}
+  group:basic:
+    help: null
+    ~rate-limit: null
+    suggest: null
+  ~chat:ccmytz: {}
+  group:console:
+    console:
+      open: false
+    ~dataview: null
+    logger: null
+    insight: null
+    market:
+      registry:
+        endpoint: https://registry.npmmirror.com
+      search:
+        endpoint: ${{ env.GITHUB_CONTENT_MIRROR }}/koishijs/registry/dist/index.json
+    sandbox: null
+    status: null
+  group:bot:
+    adapter-onebot:
+      selfId: ${{env.BOT_SELFID}}
+      password: ${{env.BOT_PASSWORD}}
+      token: ${{env.BOT_TOKEN}}
+      endpoint: ${{env.BOT_ENDPOINT}}
+      timeout: 5
+      protocol: ws
+      disabled: false
+      path: ${{env.BOT_PATH}}
+      secret: ${{env.BOT_SECRET}}
+    chat:ccmytz: {}
+  group:database:
+    database-mysql:wmlmwp:
+      host: ${{env.MYSQL_HOST}}
+      user: ${{env.MYSQL_USER}}
+      password: ${{env.MYSQL_PASSWORD}}
+      database: ${{env.MYSQL_DATABASE}}
+  ~:fmzkfw: {}
+  who-is-dragon-king: {}
