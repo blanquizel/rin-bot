@@ -1,7 +1,9 @@
 import { Context } from 'koishi';
 import dayjs from 'dayjs';
 import dayOfYear from 'dayjs/plugin/dayOfYear';
+import isoWeek from 'dayjs/plugin/isoWeek';
 dayjs.extend(dayOfYear);
+dayjs.extend(isoWeek);
 
 type Holiday = {
     name: string;
@@ -55,19 +57,19 @@ const data = {
 
 export function core(ctx: Context) {
 
-    ctx.command('剩余假期')
+    ctx.command('法定假期')
         .userFields(['name'])
         .action(() => {
-            const cur = new Date();
-            const year = dayjs(cur).year();
+            const cur = dayjs(new Date());
+            const year = cur.year();
 
-            let str = `今天是${dayjs(cur).format('YYYY年MM月DD日')}，星期${weekDay[dayjs(cur).day()]}。`;
+            let str = `今天是${cur.format('YYYY年MM月DD日')}，星期${weekDay[cur.isoWeekday() - 1]}。`;
             const holidays = data['year-' + year];
             holidays.forEach((holiday: Holiday) => {
-                if (dayjs(cur).isBefore(dayjs(holiday.start))) {
-                    const duration = dayjs(holiday.start).dayOfYear() - dayjs(cur).dayOfYear();
+                if (cur.isBefore(dayjs(holiday.start))) {
+                    const duration = dayjs(holiday.start).dayOfYear() - cur.dayOfYear();
 
-                    str += `距离${holiday.name}（${dayjs(holiday.start).format('YYYY年MM月DD日')}）还有${duration}天,`;
+                    str += `距离${holiday.name}（${dayjs(holiday.start).format('YYYY年MM月DD日')}）还有${duration}天，`;
                 }
             })
             str += '享受剩余的假日吧！';
