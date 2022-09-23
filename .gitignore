@@ -19,3 +19,4 @@ tsconfig.tsbuildinfo
 *.sln
 
 logs
+.vite
