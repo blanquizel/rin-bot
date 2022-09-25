@@ -18,7 +18,7 @@ const getRankUser = async (userId: string, session: Session): Promise<string> =>
 
 const sumToDay = (): SUMPARAMS => {
     return {
-        duration: Duration.Yesterday,
+        duration: Duration.Today,
         date: dayjs().format('YYYY-MM-DD'),
         limit: LIMIT,
     };
@@ -65,7 +65,7 @@ const doSum = async (ctx: Context, session: Session, params: SUMPARAMS) => {
         ans += `\n ${i + 1} - ${user} - ${item.message}条（${(item.message * 100 / sum).toFixed(2)}%）`
     }
 
-    ans += `\n ${userMap.get(rank[0].user)}是摸皇帝`;
+    ans += `\n ${userMap.get(rank[0].user)}是摸鱼皇帝`;
 
     return ans;
 }
