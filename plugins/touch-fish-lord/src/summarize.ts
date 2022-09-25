@@ -3,22 +3,14 @@ import dayjs from 'dayjs'
 
 import { Duration } from './duration';
 
+const LIMIT = 10;
 
-const genSql = () => {
-    const sql = `
-        SELECT user, SUM(message) as message
-        FROM talk_statistic
-        WHERE platform = ? AND channel = ? AND date <= ? AND date >= ?
-        GROUP BY user
-        ORDER BY message DESC
-        LIMIT 10`
-
-    return sql
+const getRankUser = async (rankItem, session: Session) : Promise<string> =>  {
+    const user = await session.bot.getGuildMember(session.guildId, rankItem.user);
+    return user ? (user.nickname || user.username) : '[找不到该用户]';
 }
 
 const sumToDay = async (ctx: Context, session: Session): Promise<string> => {
-    const sql = genSql();
-
     const params = {
         platform: 'onebot',
         channel: session.channelId,
@@ -28,20 +20,63 @@ const sumToDay = async (ctx: Context, session: Session): Promise<string> => {
         sort: { message: 'desc' },
     });
 
-    console.log(rank);
+    let sum = 0;
+    rank.forEach(item => {
+        sum += item.message;
+    })
 
-    return '1';
+    let ans = `今日摸鱼榜（共${sum}条消息 ）`;
+
+    const limit = Math.min(LIMIT, rank.length);
+
+    const userMap = new Map();
+
+    for (let i = 0; i < limit; i++) {
+        const item = rank[i];
+
+        const user = await getRankUser(item, session);
+        userMap.set(item.user, user);
+
+        ans += `\n ${i + 1} - ${user} - ${item.message}条（${(item.message * 100 / sum).toFixed(2)}%）`
+    }
+
+    ans += `\n ${userMap.get(rank[0].user)}是摸鱼王`;
+
+    return ans;
 }
 const sumLastDay = async (ctx: Context, session: Session): Promise<string> => {
-    const sql = genSql();
-
     const params = {
         platform: 'onebot',
         channel: session.channelId,
         date: dayjs().subtract(7, 'year').format('YYYY-MM-DD')
     }
+    const rank = await ctx.database.get('talk_statistic', params, {
+        sort: { message: 'desc' },
+    });
 
-    return '2';
+
+    let sum = 0;
+    rank.forEach(item => {
+        sum += item.message;
+    })
+
+
+    let ans = `昨日摸鱼榜（共${sum}条消息 ）`;
+
+    const limit = Math.min(LIMIT, rank.length);
+    const userMap = new Map();
+
+    for (let i = 0; i < limit; i++) {
+        const item = rank[i];
+        const user = await getRankUser(item, session);
+        userMap.set(item.user, user);
+
+        ans += `\n ${i + 1} - ${await getRankUser(item, session)} - ${item.message}条（${(item.message * 100 / sum).toFixed(2)}%）`
+    }
+
+    ans += `\n ${userMap.get(rank[0].user)}是摸鱼王`;
+
+    return ans;
 }
 
 const sum = async (ctx: Context, session: Session, duration: Duration): Promise<string> => {
