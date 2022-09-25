@@ -19,7 +19,6 @@ export function message(ctx: Context) {
             message: { $add: [{ $: 'message' }, 1] },
         }]
 
-        // console.log(rows);
         await ctx.database.upsert('talk_statistic', rows);
     })
 }

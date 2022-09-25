@@ -6,17 +6,17 @@ import { Duration } from './duration';
 
 const genSql = () => {
     const sql = `
-    SELECT user, SUM(message) as message
-    FROM talk_statistic
-    WHERE platform = ? AND channel = ? AND date <= ? AND date >= ?
-    GROUP BY user
-    ORDER BY message DESC
-    LIMIT 10`
+        SELECT user, SUM(message) as message
+        FROM talk_statistic
+        WHERE platform = ? AND channel = ? AND date <= ? AND date >= ?
+        GROUP BY user
+        ORDER BY message DESC
+        LIMIT 10`
 
     return sql
 }
 
-const sumToDay = (ctx: Context, session: Session): string => {
+const sumToDay = async (ctx: Context, session: Session): Promise<string> => {
     const sql = genSql();
 
     const params = {
@@ -24,12 +24,16 @@ const sumToDay = (ctx: Context, session: Session): string => {
         channel: session.channelId,
         date: dayjs().format('YYYY-MM-DD')
     }
-    return genSql();
-}
-const sumLastDay = (ctx: Context, session: Session): string => {
-    const sql = genSql();
+    const rank = await ctx.database.get('talk_statistic', params, {
+        sort: { message: 'desc' },
+    });
 
-    const query = async (q, args) => await ctx.database.drivers.mysql.query(outdent`${q}`, args)
+    console.log(rank);
+
+    return '1';
+}
+const sumLastDay = async (ctx: Context, session: Session): Promise<string> => {
+    const sql = genSql();
 
     const params = {
         platform: 'onebot',
@@ -37,14 +41,15 @@ const sumLastDay = (ctx: Context, session: Session): string => {
         date: dayjs().subtract(7, 'year').format('YYYY-MM-DD')
     }
 
-    return '1';
+    return '2';
 }
 
-const sum = async (ctx: Context, session: Session, duration): Promise<string> => {
-    let sql: string = '';
+const sum = async (ctx: Context, session: Session, duration: Duration): Promise<string> => {
     switch (duration) {
-        case Duration.Today: sql = sumToDay(ctx, session); break;
-        case Duration.Yesterday: sql = sumLastDay(ctx, session); break;
+        case Duration.Today:
+            return sumToDay(ctx, session);
+        case Duration.Yesterday:
+            return sumLastDay(ctx, session);
         default: break;
     }
     return '暂无支持的操作';
@@ -52,13 +57,13 @@ const sum = async (ctx: Context, session: Session, duration): Promise<string> =>
 
 export function summarize(ctx: Context) {
 
-    ctx.command('今日龙王')
+    ctx.command('今日摸鱼榜')
         .userFields(['name'])
         .action(({ session }) => {
             return sum(ctx, session, Duration.Today);
         });
 
-    ctx.command('昨日龙王')
+    ctx.command('昨日摸鱼榜')
         .userFields(['name'])
         .action(({ session }) => {
             return sum(ctx, session, Duration.Yesterday);
