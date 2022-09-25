@@ -11,8 +11,8 @@ type SUMPARAMS = {
     limit: number,
 }
 
-const getRankUser = async (rankItem, session: Session): Promise<string> => {
-    const user = await session.bot.getGuildMember(session.guildId, rankItem.user);
+const getRankUser = async (userId: string, session: Session): Promise<string> => {
+    const user = await session.bot.getGuildMember(session.guildId, userId);
     return user ? (user.nickname || user.username) : '[找不到该用户]';
 }
 
@@ -55,7 +55,7 @@ const doSum = async (ctx: Context, session: Session, params: SUMPARAMS) => {
     for (let i = 0; i < _limit; i++) {
         const item = rank[i];
 
-        const user = await getRankUser(item, session);
+        const user = await getRankUser(item.user, session);
         userMap.set(item.user, user);
 
         ans += `\n ${i + 1} - ${user} - ${item.message}条（${(item.message * 100 / sum).toFixed(2)}%）`
