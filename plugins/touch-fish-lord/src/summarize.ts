@@ -5,18 +5,39 @@ import { Duration } from './duration';
 
 const LIMIT = 10;
 
-const getRankUser = async (rankItem, session: Session) : Promise<string> =>  {
+type SUMPARAMS = {
+    duration: Duration,
+    date: string,
+    limit: number,
+}
+
+const getRankUser = async (rankItem, session: Session): Promise<string> => {
     const user = await session.bot.getGuildMember(session.guildId, rankItem.user);
     return user ? (user.nickname || user.username) : '[找不到该用户]';
 }
 
-const sumToDay = async (ctx: Context, session: Session): Promise<string> => {
-    const params = {
+const sumToDay = (): SUMPARAMS => {
+    return {
+        duration: Duration.Yesterday,
+        date: dayjs().format('YYYY-MM-DD'),
+        limit: LIMIT,
+    };
+}
+const sumLastDay = (): SUMPARAMS => {
+    return {
+        duration: Duration.Yesterday,
+        date: dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
+        limit: LIMIT,
+    };
+}
+
+const doSum = async (ctx: Context, session: Session, params: SUMPARAMS) => {
+    const query = {
         platform: 'onebot',
         channel: session.channelId,
-        date: dayjs().format('YYYY-MM-DD')
+        date: params.date
     }
-    const rank = await ctx.database.get('talk_statistic', params, {
+    const rank = await ctx.database.get('talk_statistic', query, {
         sort: { message: 'desc' },
     });
 
@@ -25,13 +46,13 @@ const sumToDay = async (ctx: Context, session: Session): Promise<string> => {
         sum += item.message;
     })
 
-    let ans = `今日摸鱼榜（共${sum}条消息 ）`;
+    let ans = `${params.duration}摸鱼榜（共${sum}条消息 ）`;
 
-    const limit = Math.min(LIMIT, rank.length);
+    const _limit = Math.min(params.limit, rank.length);
 
     const userMap = new Map();
 
-    for (let i = 0; i < limit; i++) {
+    for (let i = 0; i < _limit; i++) {
         const item = rank[i];
 
         const user = await getRankUser(item, session);
@@ -40,51 +61,21 @@ const sumToDay = async (ctx: Context, session: Session): Promise<string> => {
         ans += `\n ${i + 1} - ${user} - ${item.message}条（${(item.message * 100 / sum).toFixed(2)}%）`
     }
 
-    ans += `\n ${userMap.get(rank[0].user)}是摸鱼王`;
-
-    return ans;
-}
-const sumLastDay = async (ctx: Context, session: Session): Promise<string> => {
-    const params = {
-        platform: 'onebot',
-        channel: session.channelId,
-        date: dayjs().subtract(7, 'year').format('YYYY-MM-DD')
-    }
-    const rank = await ctx.database.get('talk_statistic', params, {
-        sort: { message: 'desc' },
-    });
-
-
-    let sum = 0;
-    rank.forEach(item => {
-        sum += item.message;
-    })
-
-
-    let ans = `昨日摸鱼榜（共${sum}条消息 ）`;
-
-    const limit = Math.min(LIMIT, rank.length);
-    const userMap = new Map();
-
-    for (let i = 0; i < limit; i++) {
-        const item = rank[i];
-        const user = await getRankUser(item, session);
-        userMap.set(item.user, user);
-
-        ans += `\n ${i + 1} - ${await getRankUser(item, session)} - ${item.message}条（${(item.message * 100 / sum).toFixed(2)}%）`
-    }
-
-    ans += `\n ${userMap.get(rank[0].user)}是摸鱼王`;
+    ans += `\n ${userMap.get(rank[0].user)}是摸皇帝`;
 
     return ans;
 }
 
 const sum = async (ctx: Context, session: Session, duration: Duration): Promise<string> => {
     switch (duration) {
-        case Duration.Today:
-            return sumToDay(ctx, session);
-        case Duration.Yesterday:
-            return sumLastDay(ctx, session);
+        case Duration.Today: {
+            const params: SUMPARAMS = sumToDay();
+            return doSum(ctx, session, params);
+        }
+        case Duration.Yesterday: {
+            const params: SUMPARAMS = sumLastDay();
+            return doSum(ctx, session, params);
+        }
         default: break;
     }
     return '暂无支持的操作';

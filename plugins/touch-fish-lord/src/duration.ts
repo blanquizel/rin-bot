@@ -1,7 +1,4 @@
 export const enum Duration {
-    Today,
-    Yesterday,
-    Week,
-    Month,
-    All
+    Today =  '今日',
+    Yesterday = '昨日',
 }
