@@ -50,7 +50,7 @@ const doSum = async (ctx: Context, session: Session, params: SUMPARAMS) => {
         sum += item.message;
     })
 
-    let ans = `${params.duration}摸鱼榜（共${sum}条消息 ）`;
+    let ans = `${params.duration}摸鱼榜 - 共${sum}条消息`;
 
     const _limit = Math.min(params.limit, rank.length);
 
@@ -62,10 +62,10 @@ const doSum = async (ctx: Context, session: Session, params: SUMPARAMS) => {
         const user = await getRankUser(item.user, session);
         userMap.set(item.user, user);
 
-        ans += `\n ${i + 1} - ${user} - ${item.message}条（${(item.message * 100 / sum).toFixed(2)}%）`
+        ans += `\n ${i + 1} - ${user} - ${item.message}条 - ${(item.message * 100 / sum).toFixed(2)}%`
     }
 
-    ans += `\n ${userMap.get(rank[0].user)}是摸鱼皇帝`;
+    ans += `\n ${userMap.get(rank[0].user)}（${rank[0].user}）是摸鱼皇帝`;
 
     return ans;
 }
