@@ -41,6 +41,10 @@ const doSum = async (ctx: Context, session: Session, params: SUMPARAMS) => {
         sort: { message: 'desc' },
     });
 
+    if (rank.length === 0) {
+        return '无人摸鱼，群将不群';
+    }
+
     let sum = 0;
     rank.forEach(item => {
         sum += item.message;
@@ -50,7 +54,7 @@ const doSum = async (ctx: Context, session: Session, params: SUMPARAMS) => {
 
     const _limit = Math.min(params.limit, rank.length);
 
-    const userMap = new Map();
+    const userMap: Map<string, string> = new Map();
 
     for (let i = 0; i < _limit; i++) {
         const item = rank[i];
