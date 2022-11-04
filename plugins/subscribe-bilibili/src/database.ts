@@ -3,11 +3,11 @@ import { Context } from 'koishi'
 declare module 'koishi' {
     interface Tables {
         subscribe_video: SubscribeVideo
-        // up_liver_info: UpLiverInfo
+        up_liver_info: UpLiverInfo
     }
 }
 
-interface SubscribeVideo{
+export interface SubscribeVideo{
     mid: string
     platform: string
     channel: string
@@ -16,10 +16,10 @@ interface SubscribeVideo{
     last_bvid: string
 }
 
-interface UpLiverInfo {
+export interface UpLiverInfo {
     mid: string
     name: string
-    room_mid: string
+    room_id: string
 }
 
 export function database(ctx: Context) {
@@ -34,11 +34,11 @@ export function database(ctx: Context) {
         primary: ['mid']
     })
 
-    // ctx.model.extend('up_liver_info', {
-    //     mid: "unsigned",
-    //     name: "string",
-    //     room_mid: "unsigned"
-    // }, {
-    //     primary: ['mid'],
-    // })
+    ctx.model.extend('up_liver_info', {
+        mid: "string",
+        name: "string",
+        room_id: "string"
+    }, {
+        primary: ['mid'],
+    })
 }

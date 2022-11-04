@@ -2,7 +2,8 @@ import { Context } from 'koishi';
 
 import { database } from './database';
 
-import { addVideoSubscribe, removeVideoSubscribe, queryVideoSubscribe } from './subscribe';
+import { videoSubscribe } from './subscribe';
+import { saveUpLiverInfo } from './info';
 
 export const name = 'subscribe-bilibili';
 export const using = ['database'];
@@ -20,7 +21,8 @@ export function apply(ctx: Context) {
 
     ctx.command('bvideo.add <mid>', '添加订阅')
         .action(async ({ session }, mid) => {
-            return addVideoSubscribe(ctx, session, mid).then((res) => {
+            saveUpLiverInfo(ctx, mid);
+            return videoSubscribe.add(ctx, session, mid).then((res) => {
                 return res;
             }).catch((e) => {
                 return e;
@@ -29,7 +31,7 @@ export function apply(ctx: Context) {
 
     ctx.command('bvideo.remove <mid>', '取消订阅')
         .action(async ({ session }, mid) => {
-            return removeVideoSubscribe(ctx, session, mid).then((res) => {
+            return videoSubscribe.remove(ctx, session, mid).then((res) => {
                 return res;
             }).catch((e) => {
                 return e;
@@ -38,11 +40,11 @@ export function apply(ctx: Context) {
 
 
     ctx.command('bvideo.query', '查询订阅')
-    .action(async ({ session }) => {
-        return queryVideoSubscribe(ctx, session).then((res) => {
-            return res;
-        }).catch((e) => {
-            return e;
+        .action(async ({ session }) => {
+            return videoSubscribe.query(ctx, session).then((res) => {
+                return res;
+            }).catch((e) => {
+                return e;
+            });
         });
-    });
 }

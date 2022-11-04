@@ -1,5 +1,6 @@
 import { Context, Session } from 'koishi';
 import dayjs from 'dayjs'
+import { getUpLiverInfo } from './info';
 // import axios from 'axios';
 
 import { VLISTURL } from './config';
@@ -21,7 +22,7 @@ enum SUB_QUERY_STATE {
     NODATA = '无订阅信息',
 }
 
-export async function addVideoSubscribe(ctx: Context, session: Session, mid: string): Promise<SUB_ADD_STATE> {
+const addVideoSubscription = function (ctx: Context, session: Session, mid: string): Promise<SUB_ADD_STATE> {
     return new Promise(async (resolve, reject) => {
         const platform = session.platform;
         const channel = session.channelId;
@@ -51,7 +52,7 @@ export async function addVideoSubscribe(ctx: Context, session: Session, mid: str
 }
 
 
-export function removeVideoSubscribe(ctx: Context, session: Session, mid: string): Promise<SUB_DEL_STATE> {
+const removeVideoSubscription = function (ctx: Context, session: Session, mid: string): Promise<SUB_DEL_STATE> {
     return new Promise(async (resolve, reject) => {
         const platform = session.platform;
         const channel = session.channelId;
@@ -70,7 +71,7 @@ export function removeVideoSubscribe(ctx: Context, session: Session, mid: string
     })
 }
 
-export function queryVideoSubscribe(ctx: Context, session: Session): Promise<SUB_QUERY_STATE | string> {
+const queryVideoSubscription = function (ctx: Context, session: Session): Promise<SUB_QUERY_STATE | string> {
     return new Promise(async (resolve, reject) => {
         const platform = session.platform;
         const channel = session.channelId;
@@ -87,8 +88,9 @@ export function queryVideoSubscribe(ctx: Context, session: Session): Promise<SUB
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
                 const user = await session.bot.getGuildMember(session.guildId, row.user);
+                const mUser = await getUpLiverInfo(ctx, row.mid);
                 // console.log(user.nickname || user.username);
-                result += `\n用户${user.nickname || user.username}（${row.user}）在${dayjs(row.date).format('YYYY年MM月DD日')}订阅了UP主${row.mid}`;
+                result += `\n用户${user.nickname || user.username}（${row.user}）在${dayjs(row.date).format('YYYY年MM月DD日')}订阅了UP主${mUser ? mUser.name : ''}${row.mid}`;
             }
 
             return resolve(result);
@@ -97,3 +99,14 @@ export function queryVideoSubscribe(ctx: Context, session: Session): Promise<SUB
         }
     })
 }
+
+export const videoSubscribe = {
+    add: addVideoSubscription,
+    remove: removeVideoSubscription,
+    query: queryVideoSubscription,
+}
+
+
+export function getVideoSubscriptionList(){}
+
+export function getLastVideo(ctx: Context, session: Session) { }
