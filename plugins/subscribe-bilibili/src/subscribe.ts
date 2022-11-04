@@ -1,5 +1,6 @@
 import { Context, Session } from 'koishi';
 import dayjs from 'dayjs'
+// import axios from 'axios';
 
 import { VLISTURL } from './config';
 
@@ -20,7 +21,7 @@ enum SUB_QUERY_STATE {
     NODATA = '无订阅信息',
 }
 
-export async function addSubscribe(ctx: Context, session: Session, mid: string, type:string): Promise<SUB_ADD_STATE> {
+export async function addVideoSubscribe(ctx: Context, session: Session, mid: string): Promise<SUB_ADD_STATE> {
     return new Promise(async (resolve, reject) => {
         const platform = session.platform;
         const channel = session.channelId;
@@ -32,18 +33,15 @@ export async function addSubscribe(ctx: Context, session: Session, mid: string, 
             user,
             mid,
             date: dayjs().format(''),
-            type,
         }];
 
-
-
         try {
-            const data = await ctx.database.get('subscribe_bilibili', { mid: mid });
+            const data = await ctx.database.get('subscribe_video', { mid: mid });
             // console.log(data);
             if (data.length > 0) {
                 return resolve(SUB_ADD_STATE.DUPLICATE);
             }
-            await ctx.database.upsert('subscribe_bilibili', rows);
+            await ctx.database.upsert('subscribe_video', rows);
             return resolve(SUB_ADD_STATE.SUCCESS);
         } catch (e) {
             console.log(e);
@@ -53,18 +51,17 @@ export async function addSubscribe(ctx: Context, session: Session, mid: string, 
 }
 
 
-export function removeSubscribe(ctx: Context, session: Session, mid: string): Promise<SUB_DEL_STATE> {
+export function removeVideoSubscribe(ctx: Context, session: Session, mid: string): Promise<SUB_DEL_STATE> {
     return new Promise(async (resolve, reject) => {
         const platform = session.platform;
         const channel = session.channelId;
-        const user = session.author.userId;
 
         try {
-            const data = await ctx.database.get('subscribe_bilibili', { platform, channel });
+            const data = await ctx.database.get('subscribe_video', { platform, channel });
             if (data.length === 0) {
                 return resolve(SUB_DEL_STATE.NODATA)
             }
-            await ctx.database.remove('subscribe_bilibili', { platform, channel });
+            await ctx.database.remove('subscribe_video', { platform, channel });
             return resolve(SUB_DEL_STATE.SUCCESS);
         } catch (e) {
             console.log(e);
@@ -73,7 +70,7 @@ export function removeSubscribe(ctx: Context, session: Session, mid: string): Pr
     })
 }
 
-export function querySubscribe(ctx: Context, session: Session): Promise<SUB_QUERY_STATE | string> {
+export function queryVideoSubscribe(ctx: Context, session: Session): Promise<SUB_QUERY_STATE | string> {
     return new Promise(async (resolve, reject) => {
         const platform = session.platform;
         const channel = session.channelId;
@@ -81,7 +78,7 @@ export function querySubscribe(ctx: Context, session: Session): Promise<SUB_QUER
         // console.log(await session.bot.getGuildMember(session.guildId, session.author.userId));
 
         try {
-            const rows = await ctx.database.get('subscribe_bilibili', { platform, channel });
+            const rows = await ctx.database.get('subscribe_video', { platform, channel });
             // console.log(rows);
             let result = '当前频道已订阅以下内容：';
             if (rows.length === 0) {

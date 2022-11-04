@@ -9,8 +9,6 @@ export function saveUpLiverInfo(ctx: Context, session: Session, mid: string) {
             mid,
         }]
 
-        await ctx.database.upsert('subscribe_bilibili', rows);
-
         resolve(true);
     })
 }
@@ -28,7 +26,6 @@ export function getUpLiverInfo(ctx: Context, session: Session, mid: string) {
             mid
         }];
 
-        await ctx.database.remove('subscribe_bilibili', rows);
 
         resolve(true);
     })

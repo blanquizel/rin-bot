@@ -2,7 +2,7 @@ import { Context } from 'koishi';
 
 import { database } from './database';
 
-import { addSubscribe, removeSubscribe, querySubscribe } from './subscribe';
+import { addVideoSubscribe, removeVideoSubscribe, queryVideoSubscribe } from './subscribe';
 
 export const name = 'subscribe-bilibili';
 export const using = ['database'];
@@ -20,7 +20,7 @@ export function apply(ctx: Context) {
 
     ctx.command('bvideo.add <mid>', '添加订阅')
         .action(async ({ session }, mid) => {
-            return addSubscribe(ctx, session, mid, 'video').then((res) => {
+            return addVideoSubscribe(ctx, session, mid).then((res) => {
                 return res;
             }).catch((e) => {
                 return e;
@@ -29,7 +29,7 @@ export function apply(ctx: Context) {
 
     ctx.command('bvideo.remove <mid>', '取消订阅')
         .action(async ({ session }, mid) => {
-            return removeSubscribe(ctx, session, mid).then((res) => {
+            return removeVideoSubscribe(ctx, session, mid).then((res) => {
                 return res;
             }).catch((e) => {
                 return e;
@@ -39,7 +39,7 @@ export function apply(ctx: Context) {
 
     ctx.command('bvideo.query', '查询订阅')
     .action(async ({ session }) => {
-        return querySubscribe(ctx, session).then((res) => {
+        return queryVideoSubscribe(ctx, session).then((res) => {
             return res;
         }).catch((e) => {
             return e;

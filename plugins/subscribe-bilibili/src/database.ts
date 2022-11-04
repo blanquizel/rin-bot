@@ -2,19 +2,18 @@ import { Context } from 'koishi'
 
 declare module 'koishi' {
     interface Tables {
-        subscribe_bilibili: SubscribeBilibili
+        subscribe_video: SubscribeVideo
         // up_liver_info: UpLiverInfo
     }
 }
 
-interface SubscribeBilibili {
+interface SubscribeVideo{
     mid: string
     platform: string
     channel: string
     date: string
     user: string
     last_bvid: string
-    type: string
 }
 
 interface UpLiverInfo {
@@ -24,14 +23,13 @@ interface UpLiverInfo {
 }
 
 export function database(ctx: Context) {
-    ctx.model.extend('subscribe_bilibili', {
+    ctx.model.extend('subscribe_video', {
         mid: 'string',
         platform: 'string',
         channel: 'string',
         date: 'string',
         user: 'string',
         last_bvid: 'string',
-        type: 'string',
     }, {
         primary: ['mid']
     })
