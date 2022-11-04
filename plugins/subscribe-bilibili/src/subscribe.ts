@@ -107,6 +107,12 @@ export const videoSubscribe = {
 }
 
 
-export function getVideoSubscriptionList(){}
+export function getVideoSubscriptionList(ctx: Context) {
+    return ctx.database.get('subscribe_video', {});
+    // return new Promise(async (resolve, _) => {
+    //     return resolve(await ctx.database.get('subscribe_video', {}));
+    // })
+
+}
 
 export function getLastVideo(ctx: Context, session: Session) { }

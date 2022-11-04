@@ -4,9 +4,16 @@ import { database } from './database';
 
 import { videoSubscribe } from './subscribe';
 import { saveUpLiverInfo } from './info';
+import { setInterval as setIntervalPromiseBased } from 'timers/promises';
 
 export const name = 'subscribe-bilibili';
 export const using = ['database'];
+
+
+const taskList = [];
+const INTERVAL = 5 * 1000;
+
+let timer: any = null;
 
 export function apply(ctx: Context) {
     ctx.plugin(database);
@@ -47,4 +54,14 @@ export function apply(ctx: Context) {
                 return e;
             });
         });
+
+    ctx.on('ready', async () => {
+        timer = setIntervalPromiseBased()
+        for await (const startAt of setIntervalPromiseBased(INTERVAL, Date.now())) {
+            console.log(Date.now() - startAt);
+
+            if ((Date.now() - startAt) > INTERVAL)
+                break;
+        }
+    })
 }
