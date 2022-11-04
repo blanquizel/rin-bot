@@ -1,7 +1,8 @@
 import { Context, Session } from 'koishi';
 import dayjs from 'dayjs'
+import { SubscribeVideo } from './database';
 import { getUpLiverInfo } from './info';
-// import axios from 'axios';
+import { Utils } from './utils';
 
 import { VLISTURL } from './config';
 
@@ -100,19 +101,24 @@ const queryVideoSubscription = function (ctx: Context, session: Session): Promis
     })
 }
 
-export const videoSubscribe = {
-    add: addVideoSubscription,
-    remove: removeVideoSubscription,
-    query: queryVideoSubscription,
-}
 
-
-export function getVideoSubscriptionList(ctx: Context) {
+const getVideoSubscriptionList = function (ctx: Context) {
     return ctx.database.get('subscribe_video', {});
     // return new Promise(async (resolve, _) => {
     //     return resolve(await ctx.database.get('subscribe_video', {}));
     // })
+}
+
+export function getLastVideo(ctx: Context, sub: SubscribeVideo) {
 
 }
 
-export function getLastVideo(ctx: Context, session: Session) { }
+
+
+export const videoSubscribe = {
+    add: addVideoSubscription,
+    remove: removeVideoSubscription,
+    query: queryVideoSubscription,
+    getSubscriptionList: getVideoSubscriptionList,
+    getLastVideo: getLastVideo
+}

@@ -9,11 +9,7 @@ import { setInterval as setIntervalPromiseBased } from 'timers/promises';
 export const name = 'subscribe-bilibili';
 export const using = ['database'];
 
-
-const taskList = [];
 const INTERVAL = 5 * 1000;
-
-let timer: any = null;
 
 export function apply(ctx: Context) {
     ctx.plugin(database);
@@ -56,10 +52,18 @@ export function apply(ctx: Context) {
         });
 
     ctx.on('ready', async () => {
-        timer = setIntervalPromiseBased()
         for await (const startAt of setIntervalPromiseBased(INTERVAL, Date.now())) {
             console.log(Date.now() - startAt);
-
+            const subs = await videoSubscribe.getSubscriptionList(ctx);
+            const taskList: Promise<any>[] = [];
+            subs.forEach(async (sub) => {
+                const task = new Promise(async (reslove, reject) => {
+                    const lastVideo = await videoSubscribe.getLastVideo(ctx, sub);
+                })
+                taskList.push(task);
+            })
+            Promise.all(taskList)
+            // console.log(subs);
             if ((Date.now() - startAt) > INTERVAL)
                 break;
         }

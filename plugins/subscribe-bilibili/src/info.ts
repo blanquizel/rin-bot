@@ -1,5 +1,5 @@
 import { Context, Session } from 'koishi';
-import axios from 'axios';
+import { Utils } from './utils';
 import { UpLiverInfo } from './database';
 
 import { USERURL } from './config';
@@ -7,21 +7,12 @@ import { USERURL } from './config';
 export function saveUpLiverInfo(ctx: Context, mid: string) {
     return new Promise(async (resolve, reject) => {
         try {
-            // const mUser= await getUpLiverInfo(ctx, mid);
-            // if (mUser) {
-            //     resolve(mUser);
-            // }
-            const result = await axios.get(USERURL, {
-                params: {
-                    mid,
-                },
-                headers: {
-                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
-                }
+            const data: any = await Utils.get(USERURL, {
+                mid,
             })
-            // console.log(result);
-            if (result.data.code == 0) {
-                const user = result.data.data;
+            // console.log(data);
+            if (data.code == 0) {
+                const user = data.data;
                 const rows = [{
                     mid: user.mid,
                     name: user.name,
@@ -32,7 +23,8 @@ export function saveUpLiverInfo(ctx: Context, mid: string) {
 
                 resolve(rows[0]);
             } else {
-                reject();
+                console.log(data);
+                reject(data);
             }
         } catch (e) {
             reject(e);
