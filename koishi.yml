@@ -40,3 +40,4 @@ plugins:
       database: ${{env.MYSQL_DATABASE}}
   ~:fmzkfw: {}
   touch-fish-lord: {}
+  subscribe-bilibili: {}

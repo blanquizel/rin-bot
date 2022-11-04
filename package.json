@@ -58,6 +58,7 @@
     "@koishijs/plugin-status": "^6.1.5",
     "@koishijs/plugin-suggest": "^1.1.5",
     "@types/sharp": "^0.31.0",
+    "axios": "^1.1.3",
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.5",
     "koishi": "^4.9.1",
