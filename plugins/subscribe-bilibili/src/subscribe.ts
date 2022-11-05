@@ -104,7 +104,7 @@ const queryVideoSubscription = function (ctx: Context, session: Session): Promis
         try {
             const rows = await ctx.database.get('subscribe', { platform, channel, type: 'video', state: 1 });
             // console.log(rows);
-            let result = '当前频道已订阅以下内容：';
+            let result = '当前频道已订阅以下UP主的最新视频消息推送：';
             if (rows.length === 0) {
                 return resolve(SUB_QUERY_STATE.NODATA);
             }
@@ -113,7 +113,7 @@ const queryVideoSubscription = function (ctx: Context, session: Session): Promis
                 const user = await session.bot.getGuildMember(session.guildId, row.user);
                 const mUser = await getUpLiverInfo(ctx, row.mid);
                 // console.log(user.nickname || user.username);
-                result += `\n用户${user.nickname || user.username}（${row.user}）已订阅UP主【${mUser ? mUser.name : ''}】（${row.mid}）`;
+                result += `\n${user.nickname || user.username}（${row.user}）订阅UP主【${mUser ? mUser.name : ''}】（${row.mid}）`;
             }
 
             return resolve(result);

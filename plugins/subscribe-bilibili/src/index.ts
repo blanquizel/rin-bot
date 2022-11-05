@@ -1,4 +1,4 @@
-import { Context } from 'koishi';
+import { Context, Logger } from 'koishi';
 import { setInterval as setIntervalPromiseBased } from 'timers/promises';
 
 import { database } from './database';
@@ -12,6 +12,9 @@ export const using = ['database'];
 const INTERVAL = 60 * 1 * 1000;
 
 export function apply(ctx: Context) {
+
+    const logger = new Logger('subscribe');
+
     ctx.plugin(database);
 
     // ctx = ctx.guild();
@@ -52,6 +55,7 @@ export function apply(ctx: Context) {
         });
 
     ctx.on('ready', async () => {
+        logger.info('subscribe task ready');
         for await (const _ of setIntervalPromiseBased(INTERVAL, Date.now())) {
             const subs = await videoSubscribe.getSubscriptionList(ctx);
             const taskList: Promise<any>[] = [];
@@ -60,6 +64,7 @@ export function apply(ctx: Context) {
                 taskList.push(task);
             })
             Promise.all(taskList);
+            logger.success('subscribe interval task start');
         }
     })
 }
