@@ -1,15 +1,17 @@
 import { Context } from 'koishi';
+import dayjs from 'dayjs'
 
 import { database } from './database';
 
 import { videoSubscribe } from './subscribe';
 import { saveUpLiverInfo } from './info';
+import {generateTask} from './tasks';
 import { setInterval as setIntervalPromiseBased } from 'timers/promises';
 
 export const name = 'subscribe-bilibili';
 export const using = ['database'];
 
-const INTERVAL = 5 * 1000;
+const INTERVAL = 10 * 1000;
 
 export function apply(ctx: Context) {
     ctx.plugin(database);
@@ -52,20 +54,19 @@ export function apply(ctx: Context) {
         });
 
     ctx.on('ready', async () => {
-        for await (const startAt of setIntervalPromiseBased(INTERVAL, Date.now())) {
-            console.log(Date.now() - startAt);
+        // for await (const startAt of setIntervalPromiseBased(INTERVAL, Date.now())) {
             const subs = await videoSubscribe.getSubscriptionList(ctx);
             const taskList: Promise<any>[] = [];
             subs.forEach(async (sub) => {
-                const task = new Promise(async (reslove, reject) => {
-                    const lastVideo = await videoSubscribe.getLastVideo(ctx, sub);
-                })
+                const task = generateTask(ctx, sub);
                 taskList.push(task);
             })
             Promise.all(taskList)
             // console.log(subs);
-            if ((Date.now() - startAt) > INTERVAL)
-                break;
-        }
+            // console.log(Date.now() - startAt);
+
+        //     if ((Date.now() - startAt) > INTERVAL)
+        //         break;
+        // }
     })
 }

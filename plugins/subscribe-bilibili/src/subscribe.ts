@@ -52,6 +52,18 @@ const addVideoSubscription = function (ctx: Context, session: Session, mid: stri
     })
 }
 
+const updateVideoSubscription = function (ctx: Context, rows) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await ctx.database.upsert('subscribe_video', rows);
+            resolve(true);
+        } catch (e) {
+            console.log(e);
+            return reject(e);
+        }
+    })
+}
+
 
 const removeVideoSubscription = function (ctx: Context, session: Session, mid: string): Promise<SUB_DEL_STATE> {
     return new Promise(async (resolve, reject) => {
@@ -91,7 +103,7 @@ const queryVideoSubscription = function (ctx: Context, session: Session): Promis
                 const user = await session.bot.getGuildMember(session.guildId, row.user);
                 const mUser = await getUpLiverInfo(ctx, row.mid);
                 // console.log(user.nickname || user.username);
-                result += `\n用户${user.nickname || user.username}（${row.user}）在${dayjs(row.date).format('YYYY年MM月DD日')}订阅了UP主${mUser ? mUser.name : ''}${row.mid}`;
+                result += `\n用户${user.nickname || user.username}（${row.user}）已订阅UP主 ${mUser ? mUser.name : ''}（${row.mid}）`;
             }
 
             return resolve(result);
@@ -109,8 +121,30 @@ const getVideoSubscriptionList = function (ctx: Context) {
     // })
 }
 
-export function getLastVideo(ctx: Context, sub: SubscribeVideo) {
+const getLastVideo = function (ctx: Context, sub: SubscribeVideo) {
+    return new Promise(async (resolve, reject) => {
+        const params = {
+            mid: sub.mid,
+            ps: 30,
+            pn: 1,
+            keyword: '',
+            order: 'pubdate',
+            order_avoided: true,
+        }
+        // console.log(params);
+        await Utils.get(VLISTURL, params).then((data: any) => {
+            if (data.code === 0) {
+                // console.log(data.data);
+                resolve(data.data);
+            } else {
+                console.log(data);
+                reject(data);
+            }
+        }).catch(e => {
+            reject(e);
+        })
 
+    });
 }
 
 
@@ -120,5 +154,6 @@ export const videoSubscribe = {
     remove: removeVideoSubscription,
     query: queryVideoSubscription,
     getSubscriptionList: getVideoSubscriptionList,
-    getLastVideo: getLastVideo
+    getLastVideo: getLastVideo,
+    updateVideoSubscription: updateVideoSubscription,
 }
