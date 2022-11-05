@@ -40,10 +40,7 @@ export function generateTask(ctx: Context, sub: SubscribeVideo) {
         const bot = ctx.bots.find(bot => { return bot.selfId === channel.assignee });
 
         // generate message
-        let message = ''
-        message += `${lastVideo.pic}`
-        message += `\n${lastVideo.author}上传了新视频${lastVideo.title}`;
-
+        let message = segment('image',{url:`${lastVideo.pic}`}) + `${lastVideo.author}上传了新视频：${lastVideo.title}`;
 
         // push message
         // bot.broadcast([sub.channel], message);
