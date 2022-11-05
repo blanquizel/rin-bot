@@ -28,6 +28,7 @@ export function generateTask(ctx: Context, sub: SubscribeVideo) {
 
         const lastVideo = vlist[0];
 
+        if (lastVideo.bvid === sub.last_bvid) { return reslove(false) };
         // check if video has update over 1 day
         const diff = dayjs(sub.date).diff(dayjs(lastVideo.create), 'day');
         // console.log('diff:', diff);
@@ -40,7 +41,7 @@ export function generateTask(ctx: Context, sub: SubscribeVideo) {
         const bot = ctx.bots.find(bot => { return bot.selfId === channel.assignee });
 
         // generate message
-        let message = segment('image',{url:`${lastVideo.pic}`}) + `${lastVideo.author}上传了新视频：${lastVideo.title}`;
+        let message = segment('image', { url: `${lastVideo.pic}` }) + `${lastVideo.author}上传了新视频：${lastVideo.title}`;
 
         // push message
         // bot.broadcast([sub.channel], message);

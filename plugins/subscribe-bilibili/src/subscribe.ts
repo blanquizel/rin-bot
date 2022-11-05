@@ -103,7 +103,7 @@ const queryVideoSubscription = function (ctx: Context, session: Session): Promis
                 const user = await session.bot.getGuildMember(session.guildId, row.user);
                 const mUser = await getUpLiverInfo(ctx, row.mid);
                 // console.log(user.nickname || user.username);
-                result += `\n用户${user.nickname || user.username}（${row.user}）已订阅UP主 ${mUser ? mUser.name : ''}（${row.mid}）`;
+                result += `\n用户${user.nickname || user.username}（${row.user}）已订阅UP主【${mUser ? mUser.name : ''}】（${row.mid}）`;
             }
 
             return resolve(result);

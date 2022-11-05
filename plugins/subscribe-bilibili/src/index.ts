@@ -1,17 +1,15 @@
 import { Context } from 'koishi';
-import dayjs from 'dayjs'
-
 import { database } from './database';
 
 import { videoSubscribe } from './subscribe';
 import { saveUpLiverInfo } from './info';
-import {generateTask} from './tasks';
+import { generateTask } from './tasks';
 import { setInterval as setIntervalPromiseBased } from 'timers/promises';
 
 export const name = 'subscribe-bilibili';
 export const using = ['database'];
 
-const INTERVAL = 10 * 1000;
+const INTERVAL = 60 * 1 * 1000;
 
 export function apply(ctx: Context) {
     ctx.plugin(database);
@@ -26,7 +24,7 @@ export function apply(ctx: Context) {
 
     ctx.command('bvideo.add <mid>', '添加订阅')
         .action(async ({ session }, mid) => {
-            saveUpLiverInfo(ctx, mid);
+            const user = saveUpLiverInfo(ctx, mid);
             return videoSubscribe.add(ctx, session, mid).then((res) => {
                 return res;
             }).catch((e) => {
@@ -54,19 +52,20 @@ export function apply(ctx: Context) {
         });
 
     ctx.on('ready', async () => {
-        // for await (const startAt of setIntervalPromiseBased(INTERVAL, Date.now())) {
+        for await (const startAt of setIntervalPromiseBased(INTERVAL, Date.now())) {
             const subs = await videoSubscribe.getSubscriptionList(ctx);
             const taskList: Promise<any>[] = [];
             subs.forEach(async (sub) => {
                 const task = generateTask(ctx, sub);
                 taskList.push(task);
             })
-            Promise.all(taskList)
+            Promise.all(taskList);
+            console.log('check all subscribe tasks');
             // console.log(subs);
             // console.log(Date.now() - startAt);
 
-        //     if ((Date.now() - startAt) > INTERVAL)
-        //         break;
-        // }
+            // if ((Date.now() - startAt) > INTERVAL)
+            //     break;
+        }
     })
 }
