@@ -3,10 +3,12 @@
 
 
 ### 可用指令
++ bvideo 心跳检查
++ bvideo.add mid 订阅制定mid的B站用户的视频更新
++ bvideo.remove mid 取消订阅
++ bvideo.query 查询本群已订阅的信息
+
 
 ### TO-DO LIST
-
-+ 维护订阅信息
-+ 维护up和liver的基本信息
-+ 定时任务
-+ 获取up的视频空间信息，检查是否有新视频上传，并进行消息推送
++ 直播订阅消息推送
++ 心跳检查更新为指令集说明
