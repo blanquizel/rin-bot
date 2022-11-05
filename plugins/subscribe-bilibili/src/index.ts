@@ -1,10 +1,10 @@
 import { Context } from 'koishi';
-import { database } from './database';
+import { setInterval as setIntervalPromiseBased } from 'timers/promises';
 
+import { database } from './database';
 import { videoSubscribe } from './subscribe';
 import { saveUpLiverInfo } from './info';
 import { generateTask } from './tasks';
-import { setInterval as setIntervalPromiseBased } from 'timers/promises';
 
 export const name = 'subscribe-bilibili';
 export const using = ['database'];
@@ -52,7 +52,7 @@ export function apply(ctx: Context) {
         });
 
     ctx.on('ready', async () => {
-        for await (const startAt of setIntervalPromiseBased(INTERVAL, Date.now())) {
+        for await (const _ of setIntervalPromiseBased(INTERVAL, Date.now())) {
             const subs = await videoSubscribe.getSubscriptionList(ctx);
             const taskList: Promise<any>[] = [];
             subs.forEach(async (sub) => {
@@ -60,12 +60,6 @@ export function apply(ctx: Context) {
                 taskList.push(task);
             })
             Promise.all(taskList);
-            console.log('check all subscribe tasks');
-            // console.log(subs);
-            // console.log(Date.now() - startAt);
-
-            // if ((Date.now() - startAt) > INTERVAL)
-            //     break;
         }
     })
 }

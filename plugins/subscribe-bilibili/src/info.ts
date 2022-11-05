@@ -1,4 +1,4 @@
-import { Context, Session } from 'koishi';
+import { Context } from 'koishi';
 import { Utils } from './utils';
 import { UpLiverInfo } from './database';
 

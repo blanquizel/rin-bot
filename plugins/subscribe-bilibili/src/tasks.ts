@@ -13,7 +13,7 @@ type Video = {
     mid: number
     author: string
     bvid: string
-    create: number
+    created: number
 }
 
 
@@ -28,11 +28,20 @@ export function generateTask(ctx: Context, sub: SubscribeVideo) {
 
         const lastVideo = vlist[0];
 
+        // check if video has ready record
         if (lastVideo.bvid === sub.last_bvid) { return reslove(false) };
         // check if video has update over 1 day
-        const diff = dayjs(sub.date).diff(dayjs(lastVideo.create), 'day');
+        const diff = dayjs(sub.date).diff(dayjs(lastVideo.created * 1000), 'day');
+        // console.log(sub.date, dayjs(lastVideo.created * 1000));
         // console.log('diff:', diff);
-        if (diff >= 1) { return reslove(false); }
+        if (diff >= 1) {
+            const rows = [Object.assign(sub, {
+                date: dayjs().format(''),
+                last_bvid: lastVideo.bvid,
+            })]
+            await videoSubscribe.updateVideoSubscription(ctx, rows);
+            return reslove(false);
+        }
 
         // get bot
         const channels: Channel[] = await ctx.database.get('channel', { guildId: sub.channel });
@@ -41,7 +50,7 @@ export function generateTask(ctx: Context, sub: SubscribeVideo) {
         const bot = ctx.bots.find(bot => { return bot.selfId === channel.assignee });
 
         // generate message
-        let message = segment('image', { url: `${lastVideo.pic}` }) + `${lastVideo.author}上传了新视频：${lastVideo.title}`;
+        let message = segment('image', { url: `${lastVideo.pic}` }) + `${lastVideo.author}上传了新视频：${lastVideo.title}\nhttps://www.bilibili.com/video/${lastVideo.bvid}`;
 
         // push message
         // bot.broadcast([sub.channel], message);
