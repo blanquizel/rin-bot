@@ -15,7 +15,7 @@ plugins:
     insight: null
     market:
       registry:
-        endpoint: https://registry.npmmirror.com
+        endpoint: https://registry.koishi.chat/index.json
       search:
         endpoint: ${{ env.GITHUB_CONTENT_MIRROR }}/koishijs/registry/dist/index.json
     sandbox: null

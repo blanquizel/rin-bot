@@ -1,6 +1,6 @@
 import { Context, Session } from 'koishi';
 import dayjs from 'dayjs'
-import { SubscribeVideo } from './database';
+import { Subscribe } from './database';
 import { getUpLiverInfo } from './info';
 import { Utils } from './utils';
 
@@ -13,7 +13,7 @@ enum SUB_ADD_STATE {
 }
 
 enum SUB_DEL_STATE {
-    SUCCESS = '取消订阅成功',
+    SUCCESS = '订阅已取消',
     FAILED = '取消订阅失败',
     NODATA = '无订阅信息',
 }
@@ -29,21 +29,29 @@ const addVideoSubscription = function (ctx: Context, session: Session, mid: stri
         const channel = session.channelId;
         const user = session.author.userId;
 
-        const rows: any = [{
+        const row = {
             platform,
             channel,
             user,
             mid,
             date: dayjs().format(''),
-        }];
+            type: 'video',
+            state: 1
+        };
 
         try {
-            const data = await ctx.database.get('subscribe_video', { mid: mid });
+            const data = await ctx.database.get('subscribe', { mid, channel });
             // console.log(data);
             if (data.length > 0) {
-                return resolve(SUB_ADD_STATE.DUPLICATE);
+                if(data[0].state === 1){
+                    return resolve(SUB_ADD_STATE.DUPLICATE);
+                }
+                const row = data[0];
+                row.state = 1;
+                await ctx.database.upsert('subscribe', data);
+                return resolve(SUB_ADD_STATE.SUCCESS);
             }
-            await ctx.database.upsert('subscribe_video', rows);
+            await ctx.database.create('subscribe', row);
             return resolve(SUB_ADD_STATE.SUCCESS);
         } catch (e) {
             console.log(e);
@@ -55,7 +63,7 @@ const addVideoSubscription = function (ctx: Context, session: Session, mid: stri
 const updateVideoSubscription = function (ctx: Context, rows) {
     return new Promise(async (resolve, reject) => {
         try {
-            await ctx.database.upsert('subscribe_video', rows);
+            await ctx.database.upsert('subscribe', rows);
             resolve(true);
         } catch (e) {
             console.log(e);
@@ -71,11 +79,13 @@ const removeVideoSubscription = function (ctx: Context, session: Session, mid: s
         const channel = session.channelId;
 
         try {
-            const data = await ctx.database.get('subscribe_video', { platform, channel });
+            const data = await ctx.database.get('subscribe', { platform, channel });
             if (data.length === 0) {
                 return resolve(SUB_DEL_STATE.NODATA)
             }
-            await ctx.database.remove('subscribe_video', { platform, channel });
+            const row = data[0];
+            row.state = 0;
+            await ctx.database.upsert('subscribe', data);
             return resolve(SUB_DEL_STATE.SUCCESS);
         } catch (e) {
             console.log(e);
@@ -92,7 +102,7 @@ const queryVideoSubscription = function (ctx: Context, session: Session): Promis
         // console.log(await session.bot.getGuildMember(session.guildId, session.author.userId));
 
         try {
-            const rows = await ctx.database.get('subscribe_video', { platform, channel });
+            const rows = await ctx.database.get('subscribe', { platform, channel, type: 'video', state: 1 });
             // console.log(rows);
             let result = '当前频道已订阅以下内容：';
             if (rows.length === 0) {
@@ -115,13 +125,13 @@ const queryVideoSubscription = function (ctx: Context, session: Session): Promis
 
 
 const getVideoSubscriptionList = function (ctx: Context) {
-    return ctx.database.get('subscribe_video', {});
+    return ctx.database.get('subscribe', { type: 'video', state: 1});
     // return new Promise(async (resolve, _) => {
     //     return resolve(await ctx.database.get('subscribe_video', {}));
     // })
 }
 
-const getLastVideo = function (ctx: Context, sub: SubscribeVideo) {
+const getLastVideo = function (ctx: Context, sub: Subscribe) {
     return new Promise(async (resolve, reject) => {
         const params = {
             mid: sub.mid,
