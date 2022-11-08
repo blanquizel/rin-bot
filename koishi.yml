@@ -15,7 +15,7 @@ plugins:
     insight: null
     market:
       registry:
-        endpoint: https://registry.koishi.chat/index.json
+        endpoint: https://registry.npmmirror.com
       search:
         endpoint: ${{ env.GITHUB_CONTENT_MIRROR }}/koishijs/registry/dist/index.json
     sandbox: null
@@ -39,5 +39,6 @@ plugins:
       password: ${{env.MYSQL_PASSWORD}}
       database: ${{env.MYSQL_DATABASE}}
   ~:fmzkfw: {}
-  touch-fish-lord: {}
-  subscribe-bilibili: {}
+  group:my-plugins:
+    touch-fish-lord: {}
+    subscribe-bilibili: {}

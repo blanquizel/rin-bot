@@ -13,7 +13,7 @@ const INTERVAL = 60 * 1 * 1000;
 
 export function apply(ctx: Context) {
 
-    const logger = new Logger('subscribe');
+    const logger = new Logger('subscribe-bilibili');
 
     ctx.plugin(database);
 
@@ -55,7 +55,7 @@ export function apply(ctx: Context) {
         });
 
     ctx.on('ready', async () => {
-        logger.info('subscribe task ready');
+        // logger.info('subscribe task ready');
         for await (const _ of setIntervalPromiseBased(INTERVAL, Date.now())) {
             const subs = await videoSubscribe.getSubscriptionList(ctx);
             const taskList: Promise<any>[] = [];
