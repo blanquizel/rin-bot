@@ -64,7 +64,7 @@ export function apply(ctx: Context) {
                 taskList.push(task);
             })
             Promise.all(taskList);
-            logger.success('subscribe interval task start');
+            // logger.success('subscribe interval task start');
         }
     })
 }

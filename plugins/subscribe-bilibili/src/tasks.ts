@@ -2,7 +2,7 @@ import { Context, Channel, segment } from 'koishi';
 import dayjs from 'dayjs'
 
 
-import { SubscribeVideo, UpLiverInfo } from './database';
+import { Subscribe, UpLiverInfo } from './database';
 
 import { videoSubscribe } from './subscribe'
 
@@ -17,7 +17,7 @@ type Video = {
 }
 
 
-export function generateTask(ctx: Context, sub: SubscribeVideo) {
+export function generateTask(ctx: Context, sub: Subscribe) {
     return new Promise(async (reslove, reject) => {
         const data: any = await videoSubscribe.getLastVideo(ctx, sub);
 
