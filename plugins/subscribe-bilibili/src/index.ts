@@ -22,7 +22,7 @@ export function apply(ctx: Context) {
 
     ctx.command('bvideo')
         .action(() => {
-            return 'b video';
+            return 'bilibli video';
         })
 
     ctx.command('bvideo.add <mid>', '添加订阅')

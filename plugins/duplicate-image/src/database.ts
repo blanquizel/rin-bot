@@ -12,6 +12,7 @@ export interface DuplicateImageDatabase {
     user: string
     date: number
     hash: string
+    count: number
 }
 
 export function database(ctx: Context) {
@@ -20,7 +21,8 @@ export function database(ctx: Context) {
         channel: 'string',
         user: 'string',
         date: 'unsigned',
-        hash: 'string'
+        hash: 'string',
+        count: 'unsigned'
     }, {
         primary: ['hash'],
     })

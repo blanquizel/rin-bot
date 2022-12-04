@@ -1,5 +1,5 @@
 import { Context, Session } from 'koishi';
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 import { Subscribe } from './database';
 import { getUpLiverInfo } from './info';
 import { Utils } from './utils';
