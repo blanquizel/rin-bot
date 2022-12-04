@@ -1,12 +1,13 @@
 # rin-bot
-出于个人兴趣编写的bot。
 
-+ 基于Koishi和go-cqhttp库
-+ 仅接入onebot频道
-+ 参考[2bot](https://github.com/idlist/2bot-v4)
+A bot just by fun.
+
++ Base by [Koishi](https://koishi.chat/) and [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
++ Only access onebot
++ Consult [2bot](https://github.com/idlist/2bot-v4)
 
 
-### 当前支持指令
+### Current command
 + 抽卡模拟
 
 + 摸鱼皇帝
