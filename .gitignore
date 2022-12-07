@@ -17,6 +17,7 @@ tsconfig.tsbuildinfo
 *.ntvs*
 *.njsproj
 *.sln
+.yarn
 
 .vite
 

@@ -7,6 +7,7 @@ declare module 'koishi' {
 }
 
 export interface DuplicateImageDatabase {
+    id?: number
     platform: string
     channel: string
     user: string
@@ -17,13 +18,14 @@ export interface DuplicateImageDatabase {
 
 export function database(ctx: Context) {
     ctx.model.extend('duplicate_image', {
+        id: 'unsigned',
         platform: 'string',
         channel: 'string',
         user: 'string',
         date: 'unsigned',
-        hash: 'string',
+        hash: 'text',
         count: 'unsigned'
-    }, {
-        primary: ['hash'],
+    },{
+        autoInc: true,
     })
 }

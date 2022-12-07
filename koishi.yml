@@ -38,5 +38,5 @@ plugins:
       database: ${{env.MYSQL_DATABASE}}
   group:custom:
     touch-fish-lord: {}
-    subscribe-bilibili: {}
     duplicate-image: {}
+    subscribe-bilibili: {}
