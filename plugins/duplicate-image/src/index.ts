@@ -1,4 +1,4 @@
-import { Context, Session, segment } from 'koishi'
+import { Context, Session, segment } from 'koishi';
 import { imageSize } from 'image-size';
 import dayjs from 'dayjs';
 // import axios from 'axios';
@@ -8,8 +8,8 @@ import { imageHash, checkHash, imageDuplicate } from './imageHash';
 
 export const name = 'duplicate-image';
 
-const IMAGE_MIN_WIDTH = 300;
-const IMAGE_MIN_HEIGHT = 300;
+const IMAGE_MIN_WIDTH = 800;
+const IMAGE_MIN_HEIGHT = 800;
 
 async function genMessage(session: Session, item: DuplicateImage): Promise<string> {
 
